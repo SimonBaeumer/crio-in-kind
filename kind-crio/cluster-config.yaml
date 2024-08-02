@@ -1,0 +1,44 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+featureGates:
+  # any feature gate can be enabled here with "Name": true
+  # or disabled here with "Name": false
+  # not all feature gates are tested, however
+  "ContainerCheckpoint": true
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          criSocket: unix:///run/crio/crio.sock
+          kubeletExtraArgs:
+            cgroup-driver: cgroupfs
+            runtime-cgroups: ""
+  - role: worker
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          criSocket: unix:///run/crio/crio.sock
+          kubeletExtraArgs:
+            cgroup-driver: cgroupfs
+            runtime-cgroups: ""
+#        --runtime-cgroups=/system.slice/containerd.service
+# /usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml --cgroup-driver=cgroupfs --container-runtime-endpoint=unix:///run/crio/crio.sock --node-ip=10.89.0.19 --node-labels= --pod-infra-container-image=registry.k8s.io/pause:3.9 --provider-id=kind://podman/container-checkpointing/container-checkpointing-control-plane --runtime-cgroups=/system.slice/containerd.service
+#  - role: worker
+#    kubeadmConfigPatches:
+#      - |
+#        kind: JoinConfiguration
+#        nodeRegistration:
+#          criSocket: unix:///run/crio/crio.sock
+#          kubeletExtraArgs:
+#            cgroup-driver: cgroupfs
+#  - role: worker
+#    kubeadmConfigPatches:
+#      - |
+#        kind: JoinConfiguration
+#        nodeRegistration:
+#          criSocket: unix:///run/crio/crio.sock
+#          kubeletExtraArgs:
+#            cgroup-driver: cgroupfs
